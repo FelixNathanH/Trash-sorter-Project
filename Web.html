@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Processing Example</title>
+</head>
+<body>
+
+<h1>Image Processing Example</h1>
+
+<form>
+    <input type="file" id="inputImage" accept="image/*">
+    <button type="button" onclick="processImage()">Process Image</button>
+</form>
+
+<br>
+
+<img id="outputImage" style="display: none;">
+
+<script>
+    function processImage() {
+        var inputImage = document.getElementById("inputImage").files[0];
+
+        // Create a new FormData object to send the image file
+        var formData = new FormData();
+        formData.append("image", inputImage);
+
+        // Use the Fetch API to send a POST request to the Python program
+        fetch("http://localhost:8000/process-image", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.blob())
+        .then(data => {
+            // Create an object URL for the output image
+            var outputImageUrl = URL.createObjectURL(data);
+
+            // Display the output image
+            document.getElementById("outputImage").src = outputImageUrl;
+            document.getElementById("outputImage").style.display = "block";
+        })
+        .catch(error => console.error(error));
+    }
+</script>
+
+</body>
+</html>
